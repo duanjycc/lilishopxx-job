@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.job.executor.jobcalculate.dao.CalculateDao">
+<select id="internalprice"  resultType="com.xxl.job.executor.jobcalculate.mai.Configure">
+    SELECT
+        type,
+        numerical_alue as numericalAlue,
+        remark
+    FROM
+        w_configure
+    WHERE
+        type = #{type}
+    </select>
+
+    <select id="getmlist" resultType="com.xxl.job.executor.jobcalculate.mai.Member">
+        SELECT
+            id ,
+            username,
+            point
+        FROM
+            li_member
+        WHERE
+            point > 0
+    </select>
+
+    <select id="gettotalpoint" resultType="java.lang.Long">
+        SELECT
+            SUM(point)
+        FROM
+            li_member
+    </select>
+
+
+    <update id="updatessdnum">
+        UPDATE li_member SET SSD=SSD +#{ssdsum},point=point-#{v} WHERE id =#{id}
+    </update>
+
+    <insert id="isertssdm">
+        INSERT INTO w_member_income ( user_id, creation_time, quantity, Income_proportion, income_type )
+        VALUES
+            ( #{mi.userId},#{mi.creationTime},#{mi.quantity},#{mi.incomeProportion},#{mi.incomeType});
+    </insert>
+
+    <select id="getsumzonx" resultType="Double">
+        SELECT IFNULL(SUM(want_count),0) FROM w_destroy_detail WHERE create_time &gt;=#{startTimef} and create_time &lt;=#{endTimef}
+    </select>
+
+    <select id="getsczl" resultType="Double">
+        SELECT SUM(SSD) FROM li_member
+
+    </select>
+
+    <update id="updateConf">
+        UPDATE w_configure SET numerical_alue =#{price} WHERE type =#{type}
+    </update>
+
+
+    <select id="operationalList" resultType="com.xxl.job.executor.jobcalculate.mai.Configure">
+        SELECT type,
+               numerical_alue as numericalAlue,
+               remark
+        from w_configure WHERE remark = #{yyzh}
+    </select>
+
+    <delete id="cleanUpTheDeity">
+        delete  FROM pending_order_form
+    </delete>
+
+    <insert id="issuanceDestruction">
+        INSERT INTO w_destroy_detail ( user_id, destroy_time, mer_name, price, want_count, STATUS, create_time, want_price, store_id )
+        VALUES
+            (
+                #{de.userId},
+                #{de.destroyTime},
+                #{de.merName},
+                #{de.price},
+                #{de.wantCount},
+                #{de.status},
+                #{de.createTime},
+                #{de.wantPrice},
+                #{de.storeId}
+            )
+    </insert>
+
+    <select id="selctxtxul" resultType="Double">
+        SELECT SUM(want_count) FROM w_destroy_detail
+
+    </select>
+
+    <select id="selctpccf" resultType="com.xxl.job.executor.jobcalculate.mai.PriceCalculationConfiguration">
+        SELECT
+        id AS id,
+        start_value AS startValue,
+        end_value AS endValue,
+        add_subtract AS addSubtract,
+        price AS price
+        FROM
+        price_calculation_configuration
+        WHERE
+        start_value &lt;= #{xtxh} AND end_value &gt;= #{xtxh}
+    </select>
+
+    <select id="selctxtxuljrxh" resultType="Double">
+        SELECT SUM(want_count) FROM w_destroy_detail WHERE create_time &gt;= curdate()
+    </select>
+
+    <update id="updatepricjian">
+        UPDATE w_configure SET numerical_alue =numerical_alue-#{price} WHERE type ="unitPrice"
+    </update>
+
+    <update id="updatepricadd">
+        UPDATE w_configure SET numerical_alue =numerical_alue+#{price} WHERE type ="unitPrice"
+    </update>
+</mapper>
